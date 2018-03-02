@@ -5,3 +5,5 @@ An antivirus in python.
 
 That must mean they see me as a competitor :-D
 
+Well its kinda 9 anti-viruses, becouse 2 anti-viruses classified it as riskware. Definition:
+Riskware is the name given to **legitimate** programs that can cause damage if they are exploited by malicious users – in order to delete, block, modify or copy data, and disrupt the performance of computers or networks .
