@@ -1,2 +1,6 @@
 
 *.gz
+temp/folderscan
+temp/process
+temp/signature
+wordcounter.txt

@@ -1,17 +1,21 @@
 import os,sys,textwrap,time,io,easygui,gzip
+from time import gmtime, strftime #For naming times
 arguments = False
 autocompress = False
 def virusdetected(viruspath, sha1):
-    print("Virus detected")
-    flavor = easygui.buttonbox("A virus has been detected: \n"+viruspath+"\nWith SHA1: "+sha1+"\nDo you want to move the virus to quarantine?",
-                               choices = ['Yes', 'No'])
+    print("Virus detected...\n\n")
+    if (autocompress == False):
+        flavor = easygui.buttonbox("A virus has been detected: \n"+viruspath+"\nWith SHA1: "+sha1+"\nDo you want to move the virus to quarantine?",
+                                   choices = ['Yes', 'No'])
+    else:
+        flavor = "Yes"
     if (flavor == "Yes"):
         try:
             virusname = viruspath.split("\\")
             virusname = virusname[-1].replace("\n","")
         except:
             virusname = viruspath
-        os.system('taskkill /f /im '+virusname[-1])
+        os.system('taskkill /f /im '+virusname)
         try:
             os.system('move "'+viruspath+'" "'+os.path.dirname(os.path.realpath(__file__))+'\\quarantine"')
             print('move "'+viruspath+'" "'+os.path.dirname(os.path.realpath(__file__))+'\\quarantine"')
@@ -20,14 +24,18 @@ def virusdetected(viruspath, sha1):
             inF = file("quarantine\\"+virusname, 'rb')
             s = inF.read()
             inF.close()
-
+            
+            #Time assigning
+            timenow = strftime("%Y-%m-%d_%H.%M.%S", gmtime())
+            
             #outF = gzip.GzipFile("quarantine\\"+virusname[-1]+".gz", 'wb')
-            outF = gzip.GzipFile("quarantine\\"+virusname+".gz", 'wb')
+            outF = gzip.GzipFile("quarantine\\"+virusname+"_"+timenow+".gz", 'wb')
             outF.write(s)
             outF.close()
             #os.remove("quarantine\\"+virusname[-1])
             os.remove("quarantine\\"+virusname)
-            easygui.msgbox ("Virus was moved to quarantine")
+            if (autocompress == False):
+                easygui.msgbox ("Virus was moved to quarantine.")
         except Exception as err:
             easygui.msgbox ("Error:\n"+str(err))
         print(viruspath)
@@ -63,7 +71,7 @@ def Checkfile(filepath):
 def Checkfolder(folderpath):
     print("Starting scan of folder: "+folderpath)
     os.system('cd "'+folderpath+'" && dir /s /b /a-d >"'+os.path.dirname(os.path.realpath(__file__))+'\\temp\\folderscan"')
-    print('cd "'+folderpath+'" && dir /s /b /a-d >"'+os.path.dirname(os.path.realpath(__file__))+'\\temp\\folderscan"')
+    #print('cd "'+folderpath+'" && dir /s /b /a-d >"'+os.path.dirname(os.path.realpath(__file__))+'\\temp\\folderscan"')
     files = open("temp\\folderscan", "r").readlines()
     print(files)
     progress = 0
@@ -76,8 +84,6 @@ def Checkfolder(folderpath):
             Checkfile(files[i])
         except Exception as err:
             print(err)
-        #progress += progresspr
-        #print("Progress: "+str(progress)+"%")
         i += 1
     print("Finished with following results:")
 
