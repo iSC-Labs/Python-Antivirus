@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os,sys,textwrap,time,io,easygui,gzip
 from time import gmtime, strftime #For naming times
 arguments = False
